@@ -6,19 +6,16 @@
 class AudioFile {
 private:
     std::string title;
-    int duration;
-    int typeId;   // 1 = song, 2 = podcast
+    std::string duration;
 
 public:
-    AudioFile(std::string t, int d, int Id);
+    std::string getTitle() const;
+    std::string getDuration() const;
 
-    std::string getBaseDetails() const;
+    void setTitle(const std::string& t);
+    void setDuration(const std::string& d);
 
-    std::string getBaseDetails();
-    int getTypeId() const {
-        return typeId;
-    }
-
+    virtual ~AudioFile() = default;
 };
 
 #endif

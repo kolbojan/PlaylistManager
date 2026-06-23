@@ -7,16 +7,22 @@
 
 class Playlist {
 private:
-    std::vector<Song> songList;
-    std::vector<Podcast> podcastList;
+    std::string name;
+    std::vector<Song> songs;
 
 public:
-    void addSong(Song s);
-    void addPodcast(Podcast p);
-    void printAll() const;
+    std::string getName() const;
+    void setName(const std::string& newName);
 
-    Song getSong(size_t index) const;
-    Podcast getPodcast(size_t index) const;
+    const std::vector<Song>& getSongs() const;
+
+    Song& getSong(int index);
+
+    void addSong(const Song& song);
+    void removeSong(int index);
+
+    void reorderSong(int fromIndex, int toIndex);
+    void updateSong(int index, const Song& song);
 };
 
 

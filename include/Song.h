@@ -6,11 +6,14 @@
 class Song : public AudioFile {
 private:
     std::string artist;
+    std::string album;
 
 public:
-    Song(std::string t, int d, std:: string a);
+    std::string getArtist() const;
+    std::string getAlbum() const;
 
-    std::string getSongDetails() const;
+    void setArtist(const std::string& a);
+    void setAlbum(const std::string& a);
 };
 
 

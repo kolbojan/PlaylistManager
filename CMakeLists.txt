@@ -18,4 +18,6 @@ add_executable(PlaylistManager src/main.cpp
         src/Songs.cpp
         src/Songs.h
         src/Podcast.cpp
-        src/Podcast.h)
+        src/Podcast.h
+        src/Library.cpp
+        src/Library.h)

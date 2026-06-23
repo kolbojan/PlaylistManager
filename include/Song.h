@@ -1,9 +1,9 @@
 #ifndef PLAYLISTMANAGER_SONG_H
 #define PLAYLISTMANAGER_SONG_H
 #include <string>
-#include "AudioFiles.h"
+#include "AudioFile.h"
 
-class Song : public AudioFiles {
+class Song : public AudioFile {
 private:
     std::string artist;
 

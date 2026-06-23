@@ -12,4 +12,6 @@ add_executable(PlaylistManager src/main.cpp
         include/FileManager.h
         src/UserInterface.cpp
         include/UserInterface.h
-        include/AudioFile.h)
+        include/AudioFile.h
+        src/AudioFiles.cpp
+        src/AudioFiles.h)

@@ -1,0 +1,9 @@
+#ifndef PLAYLISTMANAGER_FILEMANAGER_H
+#define PLAYLISTMANAGER_FILEMANAGER_H
+
+
+class FileManager {
+};
+
+
+#endif

@@ -1,0 +1,9 @@
+#ifndef PLAYLISTMANAGER_USERINTERFACE_H
+#define PLAYLISTMANAGER_USERINTERFACE_H
+
+
+class UserInterface {
+};
+
+
+#endif

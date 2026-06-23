@@ -1,8 +1,18 @@
 #include "../include/Song.h"
 
-Song::Song(std::string t, int d, std::string a) : AudioFiles(t, d, 1), artist(a)
-{}
 
-std::string Song::getSongDetails() const {
-    return "[Song] " + getBaseDetails() + " by" + artist;
+std::string Song::getArtist() const {
+    return artist;
+}
+
+void Song::setArtist(const std::string& a) {
+    artist = a;
+}
+
+std::string Song::getAlbum() const {
+    return album;
+}
+
+void Song::setAlbum(const std::string& a) {
+    album = a;
 }

@@ -4,7 +4,7 @@
 #include <string>
 
 class AudioFile {
-private:
+protected:  // So that subclass Song can access these!
     std::string title;
     std::string duration;
 

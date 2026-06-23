@@ -17,6 +17,16 @@ class UserInterface {
 
         void mainMenu();
 
+        void addSong();
+
+        void removeSong();
+
+        void changePosition();
+
+        void editSong();
+
+        void editPlaylist();
+
         void printPlaylistContents(int playlist_choice);
 
         void selectPlaylists();

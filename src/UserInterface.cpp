@@ -169,6 +169,7 @@ void UserInterface::createPlaylist() {
     cout << "(Enter 0 to return to the main menu)" << endl;
     cout << "Playlist name: ";
     string playlistName;
+    cin.ignore();
     getline(cin, playlistName);
     if (playlistName == "0") return;
     try {
@@ -206,6 +207,7 @@ void UserInterface::addSong() {
     string albumName;
     if (sOrP == "s") {
         cout << "Album name: ";
+        cin.ignore();
         getline(cin, albumName);
         if (albumName == "0") return;
     }
@@ -339,6 +341,7 @@ void UserInterface::editSong() {
         case 1: {
             cout << "New name: ";
             string newName;
+            cin.ignore();
             getline(cin, newName);
             songToEdit->setName(newName);
             break;

@@ -188,16 +188,17 @@ void UserInterface::addSong() {
     string playlistName = selectedPlaylist.getName();
     cout << "\n==== Adding a new song to " << playlistName << " ====" << endl;
     cout << "(Enter 0 to return to the playlist)" << endl;
+    cin.ignore();
     cout << "Song name: ";
     string songName;
     getline(cin, songName);
     if (songName == "0") return;
 
+
     cout << "Artist name: ";
     string artistName;
     getline(cin, artistName);
     if (artistName == "0") return;
-
 
     cout << "Is this a song or a podcast? [s/p]: ";
     string sOrP;
@@ -206,10 +207,12 @@ void UserInterface::addSong() {
 
     string albumName;
     if (sOrP == "s") {
-        cout << "Album name: ";
         cin.ignore();
+        cout << "Album name: ";
         getline(cin, albumName);
         if (albumName == "0") return;
+    } else {
+        cin.ignore();
     }
 
     cout << "Duration of the file (minutes:seconds): ";

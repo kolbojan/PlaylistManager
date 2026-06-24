@@ -169,7 +169,7 @@ void UserInterface::createPlaylist() {
     cout << "(Enter 0 to return to the main menu)" << endl;
     cout << "Playlist name: ";
     string playlistName;
-    cin >> playlistName;
+    getline(cin, playlistName);
     if (playlistName == "0") return;
     try {
         // TODO: FileManager.createPlaylist(playlistName)
@@ -189,12 +189,12 @@ void UserInterface::addSong() {
     cout << "(Enter 0 to return to the playlist)" << endl;
     cout << "Song name: ";
     string songName;
-    cin >> songName;
+    getline(cin, songName);
     if (songName == "0") return;
 
     cout << "Artist name: ";
     string artistName;
-    cin >> artistName;
+    getline(cin, artistName);
     if (artistName == "0") return;
 
 
@@ -206,13 +206,13 @@ void UserInterface::addSong() {
     string albumName;
     if (sOrP == "s") {
         cout << "Album name: ";
-        cin >> albumName;
+        getline(cin, albumName);
         if (albumName == "0") return;
     }
 
     cout << "Duration of the file (minutes:seconds): ";
     string duration;
-    cin >> duration;
+    getline(cin, duration);
     if (duration == "0") return;
 
     cout << "Are you ready to add the song to the playlist?" << endl;
@@ -297,7 +297,7 @@ void UserInterface::changePosition() {
 void UserInterface::editSong() {
 
     cout << "Which song do you want to edit?" << endl;
-    cout << "(Enter 0 to return to the playlist)" << endl;
+    cout << "(Enter 0 to return to the p1laylist)" << endl;
     cout << "Song number: ";
 
     int songNumber;
@@ -339,7 +339,7 @@ void UserInterface::editSong() {
         case 1: {
             cout << "New name: ";
             string newName;
-            cin >> newName;
+            getline(cin, newName);
             songToEdit->setName(newName);
             break;
         }
@@ -347,7 +347,7 @@ void UserInterface::editSong() {
         case 2: {
             cout << "New artist name: ";
             string newArtist;
-            cin >> newArtist;
+            getline(cin, newArtist);
             songToEdit->setArtist(newArtist);
             break;
         }
@@ -358,7 +358,7 @@ void UserInterface::editSong() {
             if (song) {
                 cout << "New album name: ";
                 string newSongAlbum;
-                cin >> newSongAlbum;
+                getline(cin, newSongAlbum);
 
                 song->setAlbum(newSongAlbum);
             }
@@ -368,7 +368,7 @@ void UserInterface::editSong() {
         case 4: {
             cout << "New duration (minutes:seconds): ";
             string newDuration;
-            cin >> newDuration;
+            getline(cin, newDuration);
             songToEdit->setDuration(newDuration);
             break;
         }
@@ -389,7 +389,7 @@ void UserInterface::editPlaylist() {
     cout << "Enter the new name of the playlist: ";
     string newPlaylistName;
     string oldPlaylistName = selectedPlaylist.getName();
-    cin >> newPlaylistName;
+    getline(cin, newPlaylistName);
     if (newPlaylistName == "0") return;
     try {
         // TODO: selectedPlaylist.changeName(newPlaylistName);

@@ -7,15 +7,21 @@ class AudioFile {
 protected:  // So that subclass Song can access these!
     std::string title;
     std::string duration;
+    std::string artist;
 
 public:
-    std::string getTitle() const;
+    std::string getName() const;
     std::string getDuration() const;
+    std::string getArtist() const;
 
-    void setTitle(const std::string& t);
+    void setName(const std::string& t);
     void setDuration(const std::string& d);
+    void setArtist(const std::string& t);
+
 
     virtual ~AudioFile() = default;
+
+    virtual std::string getType() const = 0;
 };
 
 #endif

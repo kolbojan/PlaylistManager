@@ -1,21 +1,15 @@
-//
-// Created by david on 23/06/2026.
-//
-
 #ifndef PLAYLISTMANAGER_PODCAST_H
 #define PLAYLISTMANAGER_PODCAST_H
-#include "AudioFiles.h"
+#include <string>
+#include "AudioFile.h"
 
-class Podcast : public AudioFiles {
+class Podcast : public AudioFile {
 private:
-    std::string host;
+    std::string artist;
 
 public:
-    Podcast(std::string t, int d, std::string h);
-
-    std::string getPodcastDetails() const;
-
+    std::string getType() const override;
 };
 
 
-#endif //PLAYLISTMANAGER_PODCAST_H
+#endif

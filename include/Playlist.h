@@ -1,28 +1,28 @@
 #ifndef PLAYLISTMANAGER_PLAYLIST_H
 #define PLAYLISTMANAGER_PLAYLIST_H
 #include <vector>
-#include "Song.h"
-#include "Podcast.h"
+#include <memory>
+#include "AudioFile.h"
 
 
 class Playlist {
 private:
     std::string name;
-    std::vector<Song> songs;
+    std::vector<std::unique_ptr<AudioFile>> content;
 
 public:
     std::string getName() const;
     void setName(const std::string& newName);
 
-    const std::vector<Song>& getSongs() const;
+    const std::vector<std::unique_ptr<AudioFile>>& getSongs() const;
 
-    Song& getSong(int index);
+    AudioFile* getSong(int index);
 
-    void addSong(const Song& song);
+    void addSong(std::unique_ptr<AudioFile> song);
     void removeSong(int index);
 
     void reorderSong(int fromIndex, int toIndex);
-    void updateSong(int index, const Song& song);
+    void updateSong(int index, std::unique_ptr<AudioFile> song);
 };
 
 

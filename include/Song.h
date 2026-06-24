@@ -9,11 +9,11 @@ private:
     std::string album;
 
 public:
-    std::string getArtist() const;
     std::string getAlbum() const;
 
-    void setArtist(const std::string& a);
     void setAlbum(const std::string& a);
+
+    std::string getType() const override;
 };
 
 

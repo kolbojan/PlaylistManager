@@ -13,14 +13,19 @@ private:
 public:
     FileManager();
 
-    void createPlaylist(const std::string& name);
+    void createPlaylist(const std::string &name) const;
 
-    Playlist loadPlaylist(int playlistId);
-    void savePlaylist(const Playlist& playlist);
+    Playlist loadPlaylist(int playlistId) const;
 
-    bool playlistExists(int playlistId);
+    void savePlaylist(const Playlist &playlist) const;
 
-    std::vector<std::string> getAllPlaylists();
+    bool playlistExists(int playlistId) const;
+
+    std::vector<std::string> getAllPlaylists() const;
+
+    void renamePlaylist(const std::string& old, const Playlist& playlist) const;
+
+    void removePlaylist(const std::string& name) const;
 };
 
 

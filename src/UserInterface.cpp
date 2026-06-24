@@ -3,11 +3,14 @@
 #include "../include/FileManager.h"
 #include "../include/UserInterface.h"
 #include "../include/Song.h"
+#include "../include/Podcast.h"
 
 
 using namespace std;
 
 Playlist selectedPlaylist;
+
+FileManager fm = FileManager();
 
 void UserInterface::start() {
     mainMenu();
@@ -18,11 +21,11 @@ void UserInterface::printMainMenu() {
 
     // Print current library:
     cout << "Your Library: " << endl;
-    // TODO: fileManager.printLibrary();
-    // Example:
-    // [1] My Favourites
-    // [2] Bangers
-    // [3] Rap
+    vector<string> playlists = fm.getAllPlaylists();
+    int i = 1;
+    for (const string& playlistName : playlists) {
+        cout << "[" << i << "] " << playlistName << endl;
+    }
 
     cout <<
         "0. (Exit)\n"
@@ -65,7 +68,7 @@ void UserInterface::selectPlaylists() {
                 break;
             default:
                 // TODO: if(fileManager.playlistExists(playlistChoice)
-                if (false) {
+                if (fm.playlistExists(playlistChoice)) {
                     printPlaylistContents(playlistChoice);
                 } else {
                     cout << "Invalid playlist ID!" << endl;
@@ -84,27 +87,40 @@ string trim(const string& s, size_t maxLen) {
 void UserInterface::printPlaylistContents(int playlist_choice) {
     // TODO: selectedPlaylist = fileManager.loadPlaylist(playlist_choice)
     // TODO: Refer to this section when adding attributes to Song and Playlist.
-    // int id = 1;
-    //
-    // cout << left
-    //      << setw(5)  << "ID"
-    //      << setw(30) << "Title"
-    //      << setw(25) << "Artist"
-    //      << setw(25) << "Album"
-    //      << setw(10) << "Duration"
-    //      << endl;
-    //
-    // cout << string(95, '-') << endl;
-    //
-    // for (const Song& song : selectedPlaylist.getSongs()) {
-    //     cout << left
-    //          << setw(5)  << id++
-    //          << setw(30) << trim(song.getName(), 30)
-    //          << setw(25) << trim(song.getArtist(), 25)
-    //          << setw(25) << trim(song.getAlbum(), 25)
-    //          << setw(10) << song.getDuration()
-    //          << endl;
-    // }
+    selectedPlaylist = fm.loadPlaylist(playlist_choice);
+    int id = 1;
+
+    cout << left
+         << setw(5)  << "ID"
+         << setw(30) << "Title"
+         << setw(25) << "Artist"
+         << setw(25) << "Album"
+         << setw(10) << "Duration"
+         << endl;
+
+    cout << string(95, '-') << endl;
+
+    for (const auto& song : selectedPlaylist.getSongs()) {
+
+        if (auto* songPtr = dynamic_cast<Song*>(song.get())) {
+            cout << left
+                 << setw(5)  << id++
+                 << setw(30) << trim(songPtr->getName(), 30)
+                 << setw(25) << trim(songPtr->getArtist(), 25)
+                 << setw(25) << trim(songPtr->getAlbum(), 25)
+                 << setw(10) << songPtr->getDuration()
+                 << endl;
+        }
+        else if (auto* podcastPtr = dynamic_cast<Podcast*>(song.get())) {
+            cout << left
+                 << setw(5)  << id++
+                 << setw(30) << trim(podcastPtr->getName(), 30)
+                 << setw(25) << trim(podcastPtr->getArtist(), 25)
+                 << setw(25) << trim("", 25)
+                 << setw(10) << podcastPtr->getDuration()
+                 << endl;
+        }
+    }
 
     int editChoice = -1;
     while (editChoice != 0) {
@@ -152,6 +168,7 @@ void UserInterface::createPlaylist() {
     cin >> playlistName;
     try {
         // TODO: FileManager.createPlaylist(playlistName)
+        fm.createPlaylist(playlistName);
     } catch (...) {
         cout << "Something went wrong while creating your playlist!" << endl;
         return;
@@ -162,41 +179,69 @@ void UserInterface::createPlaylist() {
 
 void UserInterface::addSong() {
     // TODO: string playlistName = selectPlaylist.getName();
-    string playlistName = "TEST";
+    string playlistName = selectedPlaylist.getName();
     cout << "\n==== Adding a new song to " << playlistName << " ====" << endl;
     cout << "(Enter 0 to return to the playlist)" << endl;
     cout << "Song name: ";
     string songName;
     cin >> songName;
     if (songName == "0") return;
+
     cout << "Artist name: ";
     string artistName;
     cin >> artistName;
     if (artistName == "0") return;
-    cout << "Album name: ";
+
+
+    cout << "Is this a song or a podcast? [s/p]: ";
+    string sOrP;
+    cin >> sOrP;
+    if (sOrP == "0") return;
+
     string albumName;
-    cin >> albumName;
-    if (albumName == "0") return;
-    cout << "Duration of the song (minutes:seconds): ";
+    if (sOrP == "s") {
+        cout << "Album name: ";
+        cin >> albumName;
+        if (albumName == "0") return;
+    }
+
+    cout << "Duration of the file (minutes:seconds): ";
     string duration;
     cin >> duration;
     if (duration == "0") return;
+
     cout << "Are you ready to add the song to the playlist?" << endl;
-    cout << songName << " " << artistName << " " << albumName << " " << duration << endl;
+    if (sOrP == "s") {
+        cout << songName << " " << artistName << " " << albumName << " " << duration << endl;
+    } else {
+        cout << songName << " " << artistName << " " << " " << duration << endl;
+    }
     cout << "Please enter your choice [Y/n]: ";
     string finalChoice;
     cin >> finalChoice;
     if (finalChoice == "n") return;
-    Song newSong;
-    // TODO: Attributes of Song class:
-    // newSong.name = songName;
-    // newSong.artist = artistName;
-    // newSong.album = albumName;
-    // newSong.duration = duration;
+    auto newSong = std::make_unique<Song>();
+    auto newPodcast = std::make_unique<Podcast>();
+    if (sOrP == "s") {
+        newSong->setName(songName);
+        newSong->setArtist(artistName);
+        newSong->setAlbum(albumName);
+        newSong->setDuration(duration);
+    } else {
+        newPodcast->setName(songName);
+        newPodcast->setArtist(artistName);
+        newPodcast->setDuration(duration);
+    }
+
     try {
-        // TODO: selectedPlaylist.addSong(newSong);
-    } catch (...) {
-        cout << "An error occurred while trying to add your song!" << endl;
+        if (sOrP == "s") {
+            selectedPlaylist.addSong(std::move(newSong));
+        } else {
+            selectedPlaylist.addSong(std::move(newPodcast));
+        }
+        fm.savePlaylist(selectedPlaylist);
+    } catch (exception& e) {
+        cout << "An error occurred while trying to add your song!" << e.what() << endl;
         return;
     }
     cout << "Successfully added a new song to the playlist!" << endl;
@@ -211,6 +256,8 @@ void UserInterface::removeSong() {
     if (songNumber == 0) return;
     try {
         // TODO: Playlist.removeSong(songNumber)
+        selectedPlaylist.removeSong(songNumber);
+        fm.savePlaylist(selectedPlaylist);
     } catch (...) {
         cout << "An error occurred while trying to remove song!" << endl;
         return;
@@ -232,6 +279,8 @@ void UserInterface::changePosition() {
     try {
         // TODO: Playlist.reorderSong(songNumber, songPositionNumber)
         // It will reorder the internal vector containing all the songs so that songNumber is in front of songPosition.
+        selectedPlaylist.reorderSong(songNumber, songPositionNumber);
+        fm.savePlaylist(selectedPlaylist);
     } catch (...) {
         cout << "An error occurred while trying to remove song!" << endl;
         return;
@@ -241,64 +290,92 @@ void UserInterface::changePosition() {
 
 
 void UserInterface::editSong() {
+
     cout << "Which song do you want to edit?" << endl;
     cout << "(Enter 0 to return to the playlist)" << endl;
     cout << "Song number: ";
+
     int songNumber;
     cin >> songNumber;
+
     if (songNumber == 0) return;
-    Song songToEdit; // TODO: Playlist.getSong(songNumber);
-    // cout << "[1] " << songToEdit.name << endl;
-    // cout << "[2] " << songToEdit.artist << endl;
-    // cout << "[3] " << songToEdit.album << endl;
-    // cout << "[4] " << songToEdit.duration << endl;
+
+    AudioFile* songToEdit = selectedPlaylist.getSong(songNumber);
+
+    cout << "[1] " << songToEdit->getName() << endl;
+    cout << "[2] " << songToEdit->getArtist() << endl;
+
+    if (songToEdit->getType() == "Song") {
+        Song* song = dynamic_cast<Song*>(songToEdit);
+
+        if (song) {
+            cout << "[3] " << song->getAlbum() << endl;
+        } else {
+            cout << "[3] Error reading album" << endl;
+        }
+    } else {
+        cout << "[3] No album data for a Podcast" << endl;
+    }
+
+    cout << "[4] " << songToEdit->getDuration() << endl;
+
     cout << "Which property do you wish to edit?" << endl;
     cout << "(Enter 0 to return to the playlist)" << endl;
     cout << "Choice: ";
+
     int choice;
     cin >> choice;
+
     switch (choice) {
+
         case 0:
             return;
 
         case 1: {
             cout << "New name: ";
-            string newSongName;
-            cin >> newSongName;
-            //songToEdit.name = newSongName;
+            string newName;
+            cin >> newName;
+            songToEdit->setName(newName);
             break;
         }
 
         case 2: {
             cout << "New artist name: ";
-            string newSongArtist;
-            cin >> newSongArtist;
-            //songToEdit.artist = newSongArtist;
+            string newArtist;
+            cin >> newArtist;
+            songToEdit->setArtist(newArtist);
             break;
         }
+
         case 3: {
-            cout << "New album name: ";
-            string newSongAlbum;
-            cin >> newSongAlbum;
-            //songToEdit.album = newSongAlbum;
+            Song* song = dynamic_cast<Song*>(songToEdit);
+
+            if (song) {
+                cout << "New album name: ";
+                string newSongAlbum;
+                cin >> newSongAlbum;
+
+                song->setAlbum(newSongAlbum);
+            }
             break;
         }
+
         case 4: {
-            cout << "New duration (minutes:seconds) : ";
-            string newSongDuration;
-            cin >> newSongDuration;
-            //songToEdit.duration = newSongDuration;
+            cout << "New duration (minutes:seconds): ";
+            string newDuration;
+            cin >> newDuration;
+            songToEdit->setDuration(newDuration);
             break;
         }
     }
 
     try {
-        // TODO: selectedPlaylist.updateSong(songNumber, songToEdit);
-        // Will replace the song specified by the songNumber to a new one (songToEdit)
-    } catch (...) {
-        cout << "An error occurred while trying to edit the song!" << endl;
+        fm.savePlaylist(selectedPlaylist);
+    } catch (exception& e) {
+        cout << "There was an error saving the playlist!" << e.what() << endl;
         return;
     }
+
     cout << "Successfully edited the song!" << endl;
 }
 
@@ -306,10 +383,13 @@ void UserInterface::editPlaylist() {
     cout << "(Enter 0 to return to the playlist)" << endl;
     cout << "Enter the new name of the playlist: ";
     string newPlaylistName;
+    string oldPlaylistName = selectedPlaylist.getName();
     cin >> newPlaylistName;
     if (newPlaylistName == "0") return;
     try {
         // TODO: selectedPlaylist.changeName(newPlaylistName);
+        selectedPlaylist.setName(newPlaylistName);
+        fm.renamePlaylist(oldPlaylistName, selectedPlaylist);
     } catch (...) {
         cout << "An error occurred while trying rename the playlist!" << endl;
         return;

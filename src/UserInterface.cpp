@@ -25,15 +25,16 @@ void UserInterface::printMainMenu() {
     int i = 1;
     for (const string& playlistName : playlists) {
         cout << "[" << i << "] " << playlistName << endl;
+        i++;
     }
 
     cout <<
-        "0. (Exit)\n"
+        "\n0. (Exit)\n"
         "1. Select a playlist\n"
         "2. Create a new playlist" << endl;
 
 
-    cout << "Enter your choice: ";
+    cout << "\nEnter your choice: ";
 }
 
 void UserInterface::mainMenu() {
@@ -70,6 +71,7 @@ void UserInterface::selectPlaylists() {
                 // TODO: if(fileManager.playlistExists(playlistChoice)
                 if (fm.playlistExists(playlistChoice)) {
                     printPlaylistContents(playlistChoice);
+                    return;
                 } else {
                     cout << "Invalid playlist ID!" << endl;
                     cout << "Please enter the number in front of the playlist you wish to select." << endl;
@@ -87,51 +89,52 @@ string trim(const string& s, size_t maxLen) {
 void UserInterface::printPlaylistContents(int playlist_choice) {
     // TODO: selectedPlaylist = fileManager.loadPlaylist(playlist_choice)
     // TODO: Refer to this section when adding attributes to Song and Playlist.
-    selectedPlaylist = fm.loadPlaylist(playlist_choice);
-    int id = 1;
-
-    cout << left
-         << setw(5)  << "ID"
-         << setw(30) << "Title"
-         << setw(25) << "Artist"
-         << setw(25) << "Album"
-         << setw(10) << "Duration"
-         << endl;
-
-    cout << string(95, '-') << endl;
-
-    for (const auto& song : selectedPlaylist.getSongs()) {
-
-        if (auto* songPtr = dynamic_cast<Song*>(song.get())) {
-            cout << left
-                 << setw(5)  << id++
-                 << setw(30) << trim(songPtr->getName(), 30)
-                 << setw(25) << trim(songPtr->getArtist(), 25)
-                 << setw(25) << trim(songPtr->getAlbum(), 25)
-                 << setw(10) << songPtr->getDuration()
-                 << endl;
-        }
-        else if (auto* podcastPtr = dynamic_cast<Podcast*>(song.get())) {
-            cout << left
-                 << setw(5)  << id++
-                 << setw(30) << trim(podcastPtr->getName(), 30)
-                 << setw(25) << trim(podcastPtr->getArtist(), 25)
-                 << setw(25) << trim("", 25)
-                 << setw(10) << podcastPtr->getDuration()
-                 << endl;
-        }
-    }
 
     int editChoice = -1;
     while (editChoice != 0) {
-        cout << "0. (Back)" << endl;
+        selectedPlaylist = fm.loadPlaylist(playlist_choice);
+        int id = 1;
+
+        cout << left
+             << setw(5)  << "ID"
+             << setw(30) << "Title"
+             << setw(25) << "Artist"
+             << setw(25) << "Album"
+             << setw(10) << "Duration"
+             << endl;
+
+        cout << string(95, '-') << endl;
+
+        for (const auto& song : selectedPlaylist.getSongs()) {
+
+            if (auto* songPtr = dynamic_cast<Song*>(song.get())) {
+                cout << left
+                     << setw(5)  << id++
+                     << setw(30) << trim(songPtr->getName(), 30)
+                     << setw(25) << trim(songPtr->getArtist(), 25)
+                     << setw(25) << trim(songPtr->getAlbum(), 25)
+                     << setw(10) << songPtr->getDuration()
+                     << endl;
+            }
+            else if (auto* podcastPtr = dynamic_cast<Podcast*>(song.get())) {
+                cout << left
+                     << setw(5)  << id++
+                     << setw(30) << trim(podcastPtr->getName(), 30)
+                     << setw(25) << trim(podcastPtr->getArtist(), 25)
+                     << setw(25) << trim("", 25)
+                     << setw(10) << podcastPtr->getDuration()
+                     << endl;
+            }
+        }
+
+        cout << "\n0. (Back)" << endl;
         cout << "1. Add a song" << endl;
         cout << "2. Remove a song" << endl;
         cout << "3. Change the position of a song" << endl;
         cout << "4. Edit the properties of a song" << endl;
         cout << "5. Edit the properties of the playlist" << endl;
 
-        cout << "Enter your choice: ";
+        cout << "\nEnter your choice: ";
         cin >> editChoice;
 
         switch (editChoice) {
@@ -163,9 +166,11 @@ void UserInterface::printPlaylistContents(int playlist_choice) {
 
 void UserInterface::createPlaylist() {
     cout << "\n==== Creating a new playlist ====" << endl;
+    cout << "(Enter 0 to return to the main menu)" << endl;
     cout << "Playlist name: ";
     string playlistName;
     cin >> playlistName;
+    if (playlistName == "0") return;
     try {
         // TODO: FileManager.createPlaylist(playlistName)
         fm.createPlaylist(playlistName);

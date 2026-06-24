@@ -13,7 +13,7 @@ class UserInterface {
         void start();
 
     private:
-        void createPlaylist();
+        static void createPlaylist();
 
         void mainMenu();
 

@@ -4,6 +4,7 @@
 #include "../include/UserInterface.h"
 #include "../include/Song.h"
 #include "../include/Podcast.h"
+#include <limits>
 
 
 using namespace std;
@@ -44,6 +45,14 @@ void UserInterface::mainMenu() {
     do {
         printMainMenu();
         cin >> choice;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
+
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         switch (choice) {
             case 0:
                 break;
@@ -63,12 +72,19 @@ void UserInterface::selectPlaylists() {
         cout << "(Enter 0 to return)" << endl;
         cout << "Choose the playlist: ";
         cin >> playlistChoice;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
+
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (playlistChoice) {
             case 0:
                 break;
             default:
-                // TODO: if(fileManager.playlistExists(playlistChoice)
                 if (fm.playlistExists(playlistChoice)) {
                     printPlaylistContents(playlistChoice);
                     return;
@@ -87,14 +103,13 @@ string trim(const string& s, size_t maxLen) {
 }
 
 void UserInterface::printPlaylistContents(int playlist_choice) {
-    // TODO: selectedPlaylist = fileManager.loadPlaylist(playlist_choice)
-    // TODO: Refer to this section when adding attributes to Song and Playlist.
+
 
     int editChoice = -1;
     while (editChoice != 0) {
         selectedPlaylist = fm.loadPlaylist(playlist_choice);
         int id = 1;
-
+        cout << endl;
         cout << left
              << setw(5)  << "ID"
              << setw(30) << "Title"
@@ -136,6 +151,14 @@ void UserInterface::printPlaylistContents(int playlist_choice) {
 
         cout << "\nEnter your choice: ";
         cin >> editChoice;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
+
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         switch (editChoice) {
             case 0:
@@ -169,11 +192,9 @@ void UserInterface::createPlaylist() {
     cout << "(Enter 0 to return to the main menu)" << endl;
     cout << "Playlist name: ";
     string playlistName;
-    cin.ignore();
     getline(cin, playlistName);
     if (playlistName == "0") return;
     try {
-        // TODO: FileManager.createPlaylist(playlistName)
         fm.createPlaylist(playlistName);
     } catch (...) {
         cout << "Something went wrong while creating your playlist!" << endl;
@@ -184,11 +205,9 @@ void UserInterface::createPlaylist() {
 }
 
 void UserInterface::addSong() {
-    // TODO: string playlistName = selectPlaylist.getName();
     string playlistName = selectedPlaylist.getName();
     cout << "\n==== Adding a new song to " << playlistName << " ====" << endl;
     cout << "(Enter 0 to return to the playlist)" << endl;
-    cin.ignore();
     cout << "Song name: ";
     string songName;
     getline(cin, songName);
@@ -203,16 +222,16 @@ void UserInterface::addSong() {
     cout << "Is this a song or a podcast? [s/p]: ";
     string sOrP;
     cin >> sOrP;
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (sOrP == "0") return;
 
     string albumName;
     if (sOrP == "s") {
-        cin.ignore();
         cout << "Album name: ";
         getline(cin, albumName);
         if (albumName == "0") return;
-    } else {
-        cin.ignore();
     }
 
     cout << "Duration of the file (minutes:seconds): ";
@@ -226,9 +245,10 @@ void UserInterface::addSong() {
     } else {
         cout << songName << " " << artistName << " " << " " << duration << endl;
     }
-    cout << "Please enter your choice [Y/n]: ";
+    cout << "Please enter your choice [y/n]: ";
     string finalChoice;
     cin >> finalChoice;
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (finalChoice == "n") return;
     auto newSong = std::make_unique<Song>();
     auto newPodcast = std::make_unique<Podcast>();
@@ -263,9 +283,16 @@ void UserInterface::removeSong() {
     cout << "Song number: ";
     int songNumber;
     cin >> songNumber;
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "Invalid input. Please enter a number.\n";
+        return;
+    }
+
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (songNumber == 0) return;
     try {
-        // TODO: Playlist.removeSong(songNumber)
         selectedPlaylist.removeSong(songNumber);
         fm.savePlaylist(selectedPlaylist);
     } catch (...) {
@@ -281,14 +308,28 @@ void UserInterface::changePosition() {
     cout << "Song number: ";
     int songNumber;
     cin >> songNumber;
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "Invalid input. Please enter a number.\n";
+        return;
+    }
+
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (songNumber == 0) return;
     cout << "Number of the song in front of which you wish to place your song: ";
     int songPositionNumber;
     cin >> songPositionNumber;
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "Invalid input. Please enter a number.\n";
+        return;
+    }
+
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (songPositionNumber == 0) return;
     try {
-        // TODO: Playlist.reorderSong(songNumber, songPositionNumber)
-        // It will reorder the internal vector containing all the songs so that songNumber is in front of songPosition.
         selectedPlaylist.reorderSong(songNumber, songPositionNumber);
         fm.savePlaylist(selectedPlaylist);
     } catch (...) {
@@ -307,6 +348,14 @@ void UserInterface::editSong() {
 
     int songNumber;
     cin >> songNumber;
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "Invalid input. Please enter a number.\n";
+        return;
+    }
+
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     if (songNumber == 0) return;
 
@@ -335,6 +384,14 @@ void UserInterface::editSong() {
 
     int choice;
     cin >> choice;
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "Invalid input. Please enter a number.\n";
+        return;
+    }
+
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     switch (choice) {
 
@@ -344,7 +401,6 @@ void UserInterface::editSong() {
         case 1: {
             cout << "New name: ";
             string newName;
-            cin.ignore();
             getline(cin, newName);
             songToEdit->setName(newName);
             break;
@@ -398,7 +454,6 @@ void UserInterface::editPlaylist() {
     getline(cin, newPlaylistName);
     if (newPlaylistName == "0") return;
     try {
-        // TODO: selectedPlaylist.changeName(newPlaylistName);
         selectedPlaylist.setName(newPlaylistName);
         fm.renamePlaylist(oldPlaylistName, selectedPlaylist);
     } catch (...) {
